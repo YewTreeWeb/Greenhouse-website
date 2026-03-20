@@ -1,0 +1,3 @@
+[ -n "$HUSKY_POST_COMMIT_RUNNING" ] && exit 0
+export HUSKY_POST_COMMIT_RUNNING=1
+npx --no -- auto-changelog -p && cp CHANGELOG.md static/CHANGELOG.md && git add CHANGELOG.md static/CHANGELOG.md && git commit --amend --no-edit --no-verify
