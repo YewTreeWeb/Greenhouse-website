@@ -1,0 +1,351 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@400;500&family=Lato:wght@300;400;700&display=swap');
+@import "tailwindcss";
+
+/* ─────────────────────────────────────────────────
+   @theme — replaces tailwind.config.ts in v4.
+   All values become utility classes automatically.
+   e.g. --color-gh-green → text-gh-green, bg-gh-green
+   ───────────────────────────────────────────────── */
+@theme {
+  /* Fonts */
+  --font-display:  "Playfair Display", Georgia, serif;
+  --font-body:     "Lato", sans-serif;
+  --font-mono:     "DM Mono", "Fira Code", monospace;
+
+  /* Colours */
+  --color-gh-base:           #0a0f0b;
+  --color-gh-green:          #7bc954;
+  --color-gh-green-dim:      #3a7d20;
+  --color-gh-amber:          #d4914a;
+  --color-gh-amber-dim:      #a05c18;
+  --color-gh-violet:         #a78bfa;
+  --color-gh-violet-dim:     #7c3aed;
+  --color-gh-text:           #e8ede4;
+  --color-gh-text-dim:       #1a2618;
+  --color-gh-secondary:      #8fa882;
+  --color-gh-secondary-dim:  #4a6640;
+  --color-gh-muted:          #4a6040;
+  --color-gh-muted-dim:      #8aaa7a;
+  --color-gh-base-light:     #eceae2;
+  --color-terminal-flag:     #88aaff;
+  --color-terminal-green:    #28c840;
+  --color-terminal-red:      #ff5f57;
+  --color-terminal-yellow:   #febc2e;
+
+  /* Border radius */
+  --radius-card: 14px;
+  --radius-pill: 20px;
+
+  /* Max width */
+  --width-page: 1100px;
+
+  /* Nav height */
+  --height-nav: 60px;
+
+  /* Font sizes */
+  --text-hero:    54px;
+  --text-section: 40px;
+  --text-eyebrow: 11px;
+  --text-tag:     10px;
+
+  /* Shadows / glows */
+  --shadow-glow-green:       0 0 24px rgba(123, 201, 84, 0.30);
+  --shadow-glow-green-hover: 0 4px 32px rgba(123, 201, 84, 0.45);
+  --shadow-glow-leaf:        0 0 16px rgba(123, 201, 84, 0.30);
+
+  /* Keyframes */
+  --animate-blink: blink 1s step-end infinite;
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0; }
+  }
+}
+
+/* ─────────────────────────────────────────────────
+   CSS custom properties for glass + orb colours.
+   These switch on data-theme and can't be expressed
+   as static @theme values — consumed as var(--*)
+   or arbitrary Tailwind values: bg-[var(--glass-bg)]
+   ───────────────────────────────────────────────── */
+:root,
+[data-theme="dark"] {
+  --glass-bg:           rgba(255, 255, 255, 0.04);
+  --glass-bg-hover:     rgba(255, 255, 255, 0.07);
+  --glass-border:       rgba(123, 201, 84, 0.14);
+  --glass-border-hover: rgba(123, 201, 84, 0.28);
+  --glass-shine:        rgba(255, 255, 255, 0.06);
+  --orb-1: rgba(60,  140, 40,  0.18);
+  --orb-2: rgba(180, 100, 30,  0.12);
+  --orb-3: rgba(20,  80,  50,  0.22);
+  --bg-surface: rgba(15, 22, 16, 0.92);
+  --terminal-bg: rgba(5, 10, 6, 0.95);
+}
+
+[data-theme="light"] {
+  --glass-bg:           rgba(255, 255, 255, 0.55);
+  --glass-bg-hover:     rgba(255, 255, 255, 0.72);
+  --glass-border:       rgba(60,  110, 35,  0.18);
+  --glass-border-hover: rgba(60,  110, 35,  0.35);
+  --glass-shine:        rgba(255, 255, 255, 0.70);
+  --orb-1: rgba(80,  160, 50,  0.12);
+  --orb-2: rgba(180, 110, 30,  0.10);
+  --orb-3: rgba(40,  120, 70,  0.14);
+  --bg-surface: rgba(240, 237, 228, 0.95);
+  --terminal-bg: rgba(15, 22, 16, 0.97);
+}
+
+/* ─────────────────────────────────────────────────
+   Base styles
+   ───────────────────────────────────────────────── */
+@layer base {
+  *, *::before, *::after { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background-color: var(--color-gh-base);
+    color: var(--color-gh-text);
+    font-family: var(--font-body);
+    overflow-x: hidden;
+    transition: background-color 0.4s ease, color 0.3s ease;
+  }
+
+  [data-theme="light"] body {
+    background-color: var(--color-gh-base-light);
+    color: var(--color-gh-text-dim);
+  }
+}
+
+/* ─────────────────────────────────────────────────
+   Component classes — glass card, buttons, tags, etc.
+   ───────────────────────────────────────────────── */
+@layer components {
+
+  /* Glass card */
+  .glass-card {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-card);
+    backdrop-filter: blur(16px) saturate(1.4);
+    -webkit-backdrop-filter: blur(16px) saturate(1.4);
+    position: relative;
+    overflow: hidden;
+    transition: background 0.25s ease, border-color 0.25s ease, transform 0.2s ease;
+  }
+
+  .glass-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--glass-shine), transparent);
+    pointer-events: none;
+  }
+
+  .glass-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius-card);
+    background: linear-gradient(135deg, var(--glass-shine) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .glass-card.hoverable:hover {
+    background: var(--glass-bg-hover);
+    border-color: var(--glass-border-hover);
+    transform: translateY(-3px);
+  }
+
+  .glass-card.pending {
+    border-style: dashed;
+    opacity: 0.75;
+  }
+
+  /* Glass nav */
+  .glass-nav {
+    background: var(--bg-surface);
+    border-bottom: 1px solid var(--glass-border);
+    backdrop-filter: blur(20px) saturate(1.5);
+    -webkit-backdrop-filter: blur(20px) saturate(1.5);
+  }
+
+  /* Terminal */
+  .glass-terminal {
+    background: var(--terminal-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-card);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .glass-terminal::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius-card);
+    background: linear-gradient(135deg, rgba(123, 201, 84, 0.06) 0%, transparent 50%);
+    pointer-events: none;
+  }
+
+  /* Buttons */
+  .btn-primary {
+    display: inline-block;
+    background: var(--color-gh-green);
+    color: #0a0f0b;
+    padding: 8px 18px;
+    border-radius: 7px;
+    font-size: 13px;
+    font-weight: 700;
+    font-family: var(--font-body);
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    box-shadow: var(--shadow-glow-green);
+    transition: filter 0.2s ease, box-shadow 0.2s ease;
+  }
+  .btn-primary:hover {
+    filter: brightness(1.1);
+    box-shadow: var(--shadow-glow-green-hover);
+  }
+
+  .btn-ghost {
+    display: inline-block;
+    background: var(--glass-bg);
+    color: var(--color-gh-secondary);
+    border: 1px solid var(--glass-border);
+    padding: 7px 16px;
+    border-radius: 7px;
+    font-size: 13px;
+    font-family: var(--font-body);
+    text-decoration: none;
+    cursor: pointer;
+    backdrop-filter: blur(8px);
+    transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  }
+  .btn-ghost:hover {
+    background: var(--glass-bg-hover);
+    border-color: var(--glass-border-hover);
+    color: var(--color-gh-text);
+  }
+
+  .btn-large-primary {
+    display: inline-block;
+    background: var(--color-gh-green);
+    color: #0a0f0b;
+    padding: 13px 28px;
+    border-radius: 9px;
+    font-size: 15px;
+    font-weight: 700;
+    font-family: var(--font-body);
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    box-shadow: var(--shadow-glow-green);
+    transition: filter 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .btn-large-primary:hover {
+    filter: brightness(1.1);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-glow-green-hover);
+  }
+
+  .btn-large-secondary {
+    display: inline-block;
+    background: var(--glass-bg);
+    color: var(--color-gh-text);
+    border: 1px solid var(--glass-border);
+    padding: 13px 28px;
+    border-radius: 9px;
+    font-size: 15px;
+    font-weight: 700;
+    font-family: var(--font-body);
+    text-decoration: none;
+    cursor: pointer;
+    backdrop-filter: blur(12px);
+    transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+  }
+  .btn-large-secondary:hover {
+    background: var(--glass-bg-hover);
+    border-color: var(--glass-border-hover);
+    transform: translateY(-2px);
+  }
+
+  /* Section label */
+  .section-label {
+    font-family: var(--font-mono);
+    font-size: var(--text-eyebrow);
+    color: var(--color-gh-green);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 0.8rem;
+  }
+
+  /* Eco tags */
+  .eco-tag,
+  .eco-tag-green,
+  .eco-tag-amber,
+  .eco-tag-violet {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: var(--text-tag);
+    padding: 3px 9px;
+    border-radius: var(--radius-pill);
+    margin-top: 10px;
+    border: 1px solid transparent;
+  }
+
+  .eco-tag-green  { background: rgba(123,201,84,0.08);  color: var(--color-gh-green);  border-color: rgba(123,201,84,0.18); }
+  .eco-tag-amber  { background: rgba(212,145,74,0.08);  color: var(--color-gh-amber);  border-color: rgba(212,145,74,0.20); }
+  .eco-tag-violet { background: rgba(167,139,250,0.08); color: var(--color-gh-violet); border-color: rgba(167,139,250,0.20); }
+
+  /* Runtime badges */
+  .runtime-badge,
+  .runtime-badge-active,
+  .runtime-badge-planned {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: var(--text-tag);
+    padding: 3px 10px;
+    border-radius: var(--radius-pill);
+    margin-bottom: 12px;
+    border: 1px solid transparent;
+  }
+  .runtime-badge-active  { background: rgba(123,201,84,0.12);  color: var(--color-gh-green);  border-color: rgba(123,201,84,0.25); }
+  .runtime-badge-planned { background: rgba(212,145,74,0.10);  color: var(--color-gh-amber);  border-color: rgba(212,145,74,0.22); }
+
+  /* Pending pill */
+  .pending-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-family: var(--font-mono);
+    font-size: var(--text-tag);
+    padding: 3px 9px;
+    border-radius: var(--radius-pill);
+    margin-bottom: 12px;
+    background: rgba(167,139,250,0.08);
+    color: var(--color-gh-violet);
+    border: 1px solid rgba(167,139,250,0.20);
+  }
+
+  /* Divider */
+  .gh-divider {
+    border: none;
+    border-top: 1px solid var(--glass-border);
+    margin: 0;
+  }
+
+  /* Ambient orbs */
+  .orb {
+    position: absolute;
+    border-radius: 9999px;
+    filter: blur(80px);
+  }
+  .orb-1 { width: 600px; height: 600px; top: -100px; left: -150px; background: var(--orb-1); }
+  .orb-2 { width: 400px; height: 400px; top: 40%;   right: -100px; background: var(--orb-2); }
+  .orb-3 { width: 500px; height: 500px; bottom: 10%; left: 30%;    background: var(--orb-3); }
+}
